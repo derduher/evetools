@@ -217,29 +217,28 @@ Patrick Weygand
 		events: {
 			'change': 'update'
 		},
-		names: {0:'', 3: 'K', 6: 'M', 9: 'B', 12: 'T'},
-		tmpl: '<option value="<%= val %>" <%= selected %>><%= label %></option>',
+		names: [{val:0, label:''}, {val: 3, label: 'K'}, {val: 6, label: 'M'}, {val: 9, label: 'B'}, {val: 12, label: 'T'}],
+		tmpl: '{{#names}}<option value="{{val}}"{{ selected}}>{{label}}</option>{{/names}}',
 		update: function (e){
 			var blah = {};
-			console.log(e.target.id, this.model.get(e.target.id));
 			blah[e.target.id] = e.target.value;
 			this.model.set(blah);
 		},
 		initialize: function () {
 			_.bindAll(this, 'render');
-			this.tmpl = _.template(this.tmpl);
+			//this.tmpl = _.template(this.tmpl);
 		},
 		render: function (){
 			this.$el.empty();
 			var unit = this.model.get('unit');
-			_(this.names).each(function(value, key, list){
-				this.$el.append(this.tmpl({
-					selected: key == unit ? 'selected':'',
-					val: key,
-					label: value
-				}));
-
+			that = this;
+			_(that.names).find(function (name) {
+				name.selected = name.val == unit ? 'selected' : '';
+				return name.val == unit;
 			}, this);
+
+			this.$el.append(Mustache.render(this.tmpl, that));
+
 			return this;
 		}
 	});
