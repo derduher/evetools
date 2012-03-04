@@ -218,7 +218,6 @@ Patrick Weygand
 			'change': 'update'
 		},
 		names: [{val:0, label:''}, {val: 3, label: 'K'}, {val: 6, label: 'M'}, {val: 9, label: 'B'}, {val: 12, label: 'T'}],
-		tmpl: '{{#names}}<option value="{{val}}"{{ selected}}>{{label}}</option>{{/names}}',
 		update: function (e){
 			var blah = {};
 			blah[e.target.id] = e.target.value;
@@ -226,7 +225,6 @@ Patrick Weygand
 		},
 		initialize: function () {
 			_.bindAll(this, 'render');
-			//this.tmpl = _.template(this.tmpl);
 		},
 		render: function (){
 			this.$el.empty();
@@ -237,7 +235,7 @@ Patrick Weygand
 				return name.val == unit;
 			}, this);
 
-			this.$el.append(Mustache.render(this.tmpl, that));
+			this.$el.append(Mustache.render($('#IskUnitView').text(), that));
 
 			return this;
 		}
