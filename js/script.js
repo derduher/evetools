@@ -88,7 +88,7 @@ Patrick Weygand
 		tagName: 'p',
 		id: 'finalTotals',
 		className: 'entryForm',
-		tmpl: '<span id="marketTotal">marketval: <%= marketVal %><%= unit %></span>, <span id="rawTotal">rawVal: <%= rawVal %> <%= unit %></span>',
+		tmpl: '#CalcsView',
 		initialize: function () {
 			_(this).bindAll('render');
 			this.options.item.on('change', this.render);
@@ -98,7 +98,7 @@ Patrick Weygand
 			this.options.iskUnit.on('change', this.render);
 			this.index = this.options.index;
 			this.unit = this.options.iskUnit;
-			this.useTmpl = _.template(this.tmpl);
+			this.useTmpl = Mustache.compile($(this.tmpl).text());
 			this.unitMap = {0:'', 3: 'K', 6: 'M', 9: 'B', 12: 'T'};
 		},
 		render: function () {
@@ -143,10 +143,10 @@ Patrick Weygand
 			blah[e.target.id] = e.target.value;
 			this.model.set(blah);
 		},
-		tmpl: '<li><label for="<%= id %>"><%= label %></label><input type="number" name="<%= id %>" id="<%= id %>" min="0" value="<%= val %>" required class="<%= className %>"/></li>',
+		tmpl: '#EntryFormView',
 		initialize: function (attributes) {
 			_.bindAll(this, 'render');
-			this.rowTmpl = _.template(this.tmpl);
+			this.renderTmpl = Mustache.compile($(this.tmpl).text());
 		}
 	});
 
@@ -155,13 +155,14 @@ Patrick Weygand
 		className: 'mineralCalculation',
 		initialize: function (attributes) {
 			_.bindAll(this, 'render');
-			this.tmpl = _.template(this.tmpl);
+			//console.log(this.tmpl);
+			this.renderTmpl = Mustache.compile($(this.tmpl).text());
 			this.mineral = this.options.mineralName;
 			this.model.on('change:' + this.mineral, this.render);
 		},
-		tmpl: ' * <span class="currencyCol"><%= indexPrice %></span> = <span class="currencyCol"><%= calculated %></span>',
+		tmpl: '#MineralCalculation',
 		render: function () {
-			this.$el.html(this.tmpl({
+			this.$el.html(this.renderTmpl({
 				indexPrice: accounting.formatNumber(this.options.index.get(this.mineral), 2),
 				calculated: accounting.formatNumber(this.options.index.get(this.mineral) * this.model.get(this.mineral), 2)
 			}));
@@ -172,14 +173,13 @@ Patrick Weygand
 	var MineralView = EntryFormView.extend({
 		tagName: 'li',
 		className: null,
-		tmpl: '<label for="<%= id %>"><%= label %></label><input type="number" name="<%= id %>" id="<%= id %>" min="0" value="<%= val %>" required class="<%= className %>"/>',
+		tmpl: '#MineralView',
 		render: function () {
 			var mineralName = this.options.mineralName;
-			this.$el.html(this.rowTmpl({
+			this.$el.html(this.renderTmpl({
 				id: mineralName,
 				val: this.model.get(mineralName),
-				label: mineralName + ' Quantity',
-				'className': 'mineral'
+				label: mineralName + ' Quantity'
 			}));
 			var mineralCalculation = new MineralCalculation({id: mineralName + "Calculation", model: this.model, mineralName: mineralName, index: this.options.index});
 			this.$el.append(mineralCalculation.render().el);
@@ -225,7 +225,9 @@ Patrick Weygand
 		},
 		initialize: function () {
 			_.bindAll(this, 'render');
+			this.renderTmpl = Mustache.compile($(this.tmpl).text());
 		},
+		tmpl: '#IskUnitView',
 		render: function (){
 			this.$el.empty();
 			var unit = this.model.get('unit');
@@ -235,7 +237,7 @@ Patrick Weygand
 				return name.val == unit;
 			}, this);
 
-			this.$el.append(Mustache.render($('#IskUnitView').text(), that));
+			this.$el.append(this.renderTmpl(that));
 
 			return this;
 		}
@@ -245,7 +247,7 @@ Patrick Weygand
 		events: {
 			'change input': 'update'
 		},
-		tmpl: '<li><label for="<%= id %>"><%= label %></label><input type="number" name="<%= id %>" id="<%= id %>" min="0" step="0.0001" value="<%= val %>" required/></li>',
+		tmpl: '#UserPropsView',
 		update: function (e){
 			var blah = {};
 			blah[e.target.id] = e.target.value;
@@ -253,7 +255,7 @@ Patrick Weygand
 		},
 		initialize: function () {
 			_.bindAll(this, 'render');
-			this.tmpl = _.template(this.tmpl);
+			this.tmpl = Mustache.compile($(this.tmpl).text());
 		},
 		render: function (){
 			this.$el.empty();
