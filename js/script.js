@@ -15,19 +15,12 @@ Patrick Weygand
 			'marketValue': 0
 		}
 	});
-	var Minerals = Backbone.Model.extend({
+	var Mineral = Backbone.Model.extend({
 		defaults: {
-			'isogen': 0,
-			'mexallon': 0,
-			'nocxium': 0,
-			'pyerite': 0,
-			'tritanium': 0,
-			'megacyte': 0,
-			'morphite': 0,
-			'zydrine': 0
+			'quantity': 0
 		},
-		calculate: function (mineralQuantity, mineralValue, brokersFee, tax) {
-			var sub = mineralQuantity * mineralValue,
+		calculate: function (mineralValue, brokersFee, tax) {
+			var sub = this.get('quantity') * mineralValue,
 			brokersTotal = brokersFee * sub,
 			totalTax = tax * sub;
 			return {
@@ -36,6 +29,23 @@ Patrick Weygand
 				brokersFee: brokersTotal,
 				tax: totalTax
 			};
+		}
+
+	});
+	var Minerals = Backbone.Collection.extend({
+		model: Mineral,
+		comparator: function (mineral) {
+			return mineral.id;
+		},
+		sum: function (index, brokersFee, tax) {
+			return this.reduce(function (memo, mineral) {
+				mineral = mineral.calculate(index.get(mineral.id), brokersFee, tax);
+				memo.tax += mineral.tax;
+				memo.brokersFee += mineral.brokersFee;
+				memo.total += mineral.total;
+				memo.subTotal += mineral.subTotal;
+				return memo;
+			}, {tax: 0, brokersFee: 0, total: 0, subTotal: 0});
 		}
 	});
 	var MineralIndex = Backbone.Model.extend({
@@ -53,36 +63,11 @@ Patrick Weygand
 	var IskUnit = Backbone.Model.extend({
 		defaults: {
 			unit: 6
+		},
+		inUnit: function (amount) {
+			return amount / Math.pow(10, this.get('unit'));
 		}
 	});
-	var Calcs = Backbone.Model.extend({
-		defaults: {
-			mineralTotal: 0,
-			marketTotal: 0
-		},
-		calculateMineral: function (mineralQuantity, mineralValue, brokersFee, tax) {
-			var sub = mineralQuantity * mineralValue,
-			brokersTotal = brokersFee * sub,
-			totalTax = tax * sub;
-			return {
-				subTotal: sub,
-				total: sub - brokersTotal - totalTax,
-				brokersFee: brokersTotal,
-				tax: totalTax
-			};
-		},
-		calculateMineralTotal: function (mineralIndex, minerals, brokersFee, tax) {
-			var total = 0;
-			_(mineralIndex).each(function (value, key, list) {
-				total += (this.calculateMineral(minerals[key], value, brokersFee, tax)).total;
-			});
-			return total;
-		},
-		inUnit: function (amount, unit) {
-			return amount / Math.pow(10, unit);
-		}
-	});
-
 
 	var CalcsView = Backbone.View.extend({
 		tagName: 'p',
@@ -106,18 +91,15 @@ Patrick Weygand
 			unitString,
 			rawVal = 0,
 			unit = this.unit.get('unit'),
-			divisor = Math.pow(10, unit),
 			brokersFee = this.options.user.get('brokersFee'),
 			salesTax = this.options.user.get('salesTax'),
 			marketVal = this.options.item.get('itemQuantity') * this.options.item.get('marketValue');
 			marketVal = marketVal - marketVal * salesTax - marketVal * brokersFee;
-			_(this.options.index.attributes).each(function (val, mineralName, list) {
-				var amt = this.options.minerals.get(mineralName) * val;
-				rawVal += amt - amt*brokersFee - amt*salesTax;
-			}, this);
+			mineralTotals = this.options.minerals.sum(this.index, brokersFee, salesTax);
+			rawVal = mineralTotals.total;
 
-			marketVal = marketVal / divisor;
-			rawVal = rawVal / divisor;
+			marketVal = this.unit.inUnit(marketVal);
+			rawVal = this.unit.inUnit(rawVal);
 			unitString = this.unitMap[unit];
 
 			this.$el.html(this.useTmpl({
@@ -155,16 +137,23 @@ Patrick Weygand
 		className: 'mineralCalculation',
 		initialize: function (attributes) {
 			_.bindAll(this, 'render');
-			//console.log(this.tmpl);
 			this.renderTmpl = Mustache.compile($(this.tmpl).text());
-			this.mineral = this.options.mineralName;
-			this.model.on('change:' + this.mineral, this.render);
+			this.model.on('change', this.render);
+			this.options.userProps.on('change', this.render);
+			this.options.index.on('change:' + this.model.id, this.render);
 		},
 		tmpl: '#MineralCalculation',
 		render: function () {
+			var indexPrice = this.options.index.get(this.model.id),
+			brokersFee = this.options.userProps.get('brokersFee'),
+			tax = this.options.userProps.get('salesTax'),
+			calculated = this.model.calculate(indexPrice, brokersFee, tax);
+
 			this.$el.html(this.renderTmpl({
-				indexPrice: accounting.formatNumber(this.options.index.get(this.mineral), 2),
-				calculated: accounting.formatNumber(this.options.index.get(this.mineral) * this.model.get(this.mineral), 2)
+				indexPrice: accounting.formatNumber(indexPrice, 2),
+				brokersFee: accounting.formatNumber(calculated.brokersFee, 2),
+				tax: accounting.formatNumber(calculated.tax, 2),
+				calculated: accounting.formatNumber(calculated.total, 2)
 			}));
 			return this;
 		}
@@ -174,14 +163,19 @@ Patrick Weygand
 		tagName: 'li',
 		className: null,
 		tmpl: '#MineralView',
+		events: {
+			'change input.mineral': 'update'
+		},
+		update: function (e) {
+			this.model.set({quantity: e.target.value});
+		},
 		render: function () {
-			var mineralName = this.options.mineralName;
 			this.$el.html(this.renderTmpl({
-				id: mineralName,
-				val: this.model.get(mineralName),
-				label: mineralName + ' Quantity'
+				id: this.model.id,
+				val: this.model.get('quantity'),
+				label: this.model.id + ' Quantity'
 			}));
-			var mineralCalculation = new MineralCalculation({id: mineralName + "Calculation", model: this.model, mineralName: mineralName, index: this.options.index});
+			var mineralCalculation = new MineralCalculation({id: this.model.id + "Calculation", model: this.model, index: this.options.index, userProps: this.options.userProps});
 			this.$el.append(mineralCalculation.render().el);
 			return this;
 		}
@@ -189,18 +183,10 @@ Patrick Weygand
 
 	var MineralsView = Backbone.View.extend({
 		tagName: 'ul',
-		events: {
-			'change input.mineral': 'update'
-		},
-		update: function (e){
-			var blah = {};
-			blah[e.target.id] = e.target.value;
-			this.model.set(blah);
-		},
 		render: function (){
 			this.$el.empty();
-			_.each(this.model.toJSON(), function (value, key, list) {
-				mineralView = new MineralView({model: this.model, mineralName: key, index: this.options.index});
+			this.model.each(function (mineral) {
+				mineralView = new MineralView({model: mineral, index: this.options.index, userProps: this.options.userProps});
 				this.$el.append(mineralView.render().el);
 			}, this);
 			return this;
@@ -272,13 +258,22 @@ Patrick Weygand
 		}
 	});
 
-	var minerals = new Minerals(),
+	var minerals = new Minerals([
+								{id: 'isogen'},
+								{id: 'mexallon'},
+								{id: 'nocxium'},
+								{id: 'pyerite'},
+								{id: 'tritanium'},
+								{id: 'megacyte'},
+								{id: 'morphite'},
+								{id: 'zydrine'}
+	]),
 	item = new Item(),
 	mineralIndex = new MineralIndex(),
 	iskUnit = new IskUnit(),
 	user = new UserProps(),
 	itemView = new ItemView({el: $("#itemInput"), model: item}),
-	mineralsView = new MineralsView({id: "mineralsInput", model: minerals, index: mineralIndex}),
+	mineralsView = new MineralsView({id: "mineralsInput", model: minerals, index: mineralIndex, userProps: user}),
 	userPropsView = new UserPropsView({id: "userPropsInput", model: user}),
 	iskUnitView = new IskUnitView({id: "unit", model: iskUnit}),
 	calcsView = new CalcsView({
