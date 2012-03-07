@@ -13,6 +13,17 @@ Patrick Weygand
 		defaults: {
 			'itemQuantity': 0,
 			'marketValue': 0
+		},
+		calculate: function (brokersFee, tax) {
+			var sub = this.get('itemQuantity') * this.get('marketValue'),
+			brokersTotal = brokersFee * sub,
+			totalTax = tax * sub;
+			return {
+				subTotal: sub,
+				total: sub - brokersTotal - totalTax,
+				brokersFee: brokersTotal,
+				tax: totalTax
+			};
 		}
 	});
 	var Mineral = Backbone.Model.extend({
@@ -66,6 +77,10 @@ Patrick Weygand
 		},
 		inUnit: function (amount) {
 			return amount / Math.pow(10, this.get('unit'));
+		},
+		getLabel: function () {
+			var label = {0:'', 3: 'K', 6: 'M', 9: 'B', 12: 'T'};
+			return label[this.get('unit')];
 		}
 	});
 
@@ -84,34 +99,38 @@ Patrick Weygand
 			this.index = this.options.index;
 			this.unit = this.options.iskUnit;
 			this.useTmpl = Mustache.compile($(this.tmpl).text());
-			this.unitMap = {0:'', 3: 'K', 6: 'M', 9: 'B', 12: 'T'};
 		},
 		render: function () {
 			var id,
-			unitString,
+			mineralTotals,
+			itemTotals,
 			rawVal = 0,
+			marketVal = 0,
 			unit = this.unit.get('unit'),
 			brokersFee = this.options.user.get('brokersFee'),
-			salesTax = this.options.user.get('salesTax'),
-			marketVal = this.options.item.get('itemQuantity') * this.options.item.get('marketValue');
-			marketVal = marketVal - marketVal * salesTax - marketVal * brokersFee;
+			salesTax = this.options.user.get('salesTax');
+
+			itemTotals = this.options.item.calculate(brokersFee, salesTax);
+			marketVal = itemTotals.total;
+
 			mineralTotals = this.options.minerals.sum(this.index, brokersFee, salesTax);
 			rawVal = mineralTotals.total;
 
 			marketVal = this.unit.inUnit(marketVal);
 			rawVal = this.unit.inUnit(rawVal);
-			unitString = this.unitMap[unit];
 
 			this.$el.html(this.useTmpl({
-				unit: unitString,
+				unit: this.unit.getLabel(),
 				marketVal: accounting.formatNumber(marketVal, 3),
 				rawVal: accounting.formatNumber(rawVal, 3)
 			}));
+
 			if (marketVal > rawVal) {
 				id = 'marketTotal';
 			} else {
 				id = 'rawTotal';
 			}
+
 			$('#' + id, this.el).addClass('higherVal');
 			return this;
 		}
