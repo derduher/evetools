@@ -80,6 +80,10 @@ ul label {
 	margin: 0 1em;
 	text-transform: capitalize;
 }
+label.mineral {
+	text-align: left;
+	width: 4em;
+}
 
 input[type="number"] {
 	width: 6em;
@@ -88,10 +92,19 @@ input[type="number"] {
 input[type="number"] + .mineralCalculation {
 	margin-left: 1em;
 }
-#itemInput .currencyCol, #mineralsInput .currencyCol{
-	width: 6em;
+.calculationCol {
 	display: inline-block;
 	text-align: right;
+	margin-right: 1em;
+}
+.totalCol {
+	width: 6em;
+}
+.taxCol {
+	width: 4.5em;
+}
+.indexCol {
+	width: 4em;
 }
 .higherVal {
 	background-color: #FFFFE0;

@@ -80,7 +80,11 @@ Patrick Weygand
 		},
 		getLabel: function () {
 			var label = {0:'', 3: 'K', 6: 'M', 9: 'B', 12: 'T'};
-			return label[this.get('unit')];
+			if (this instanceof Number) {
+				return label[this];
+			} else {
+				return label[this.get('unit')];
+			}
 		}
 	});
 
@@ -192,7 +196,7 @@ Patrick Weygand
 			this.$el.html(this.renderTmpl({
 				id: this.model.id,
 				val: this.model.get('quantity'),
-				label: this.model.id + ' Quantity'
+				label: this.model.id
 			}));
 			var mineralCalculation = new MineralCalculation({id: this.model.id + "Calculation", model: this.model, index: this.options.index, userProps: this.options.userProps});
 			this.$el.append(mineralCalculation.render().el);
@@ -212,8 +216,24 @@ Patrick Weygand
 		}
 	});
 	var ItemView = EntryFormView.extend({
+		id: 'itemInput',
+		tmpl: '#ItemView',
 		events: {
 			'change input.item': 'update'
+		},
+		render: function () {
+			this.$el.empty().html(this.renderTmpl({
+				id: 'marketValue',
+				label: 'worth',
+				val: this.model.get('marketValue'),
+				unit: 'ISK'
+			}) + this.renderTmpl({
+				id: 'itemQuantity',
+				label: 'amount',
+				val: this.model.get('itemQuantity'),
+				unit: 'items'
+			}));
+			return this;
 		}
 	});
 	var IskUnitView = Backbone.View.extend({
@@ -222,7 +242,6 @@ Patrick Weygand
 		events: {
 			'change': 'update'
 		},
-		names: [{val:0, label:''}, {val: 3, label: 'K'}, {val: 6, label: 'M'}, {val: 9, label: 'B'}, {val: 12, label: 'T'}],
 		update: function (e){
 			var blah = {};
 			blah[e.target.id] = e.target.value;
@@ -233,16 +252,19 @@ Patrick Weygand
 			this.renderTmpl = Mustache.compile($(this.tmpl).text());
 		},
 		tmpl: '#IskUnitView',
-		render: function (){
+		render: function () {
 			this.$el.empty();
 			var unit = this.model.get('unit');
-			that = this;
-			_(that.names).find(function (name) {
-				name.selected = name.val == unit ? 'selected' : '';
-				return name.val == unit;
-			}, this);
 
-			this.$el.append(this.renderTmpl(that));
+			this.$el.append(this.renderTmpl({
+				names: [0,3,6,9,12],
+				label: this.model.getLabel,
+				selected: function () {
+					if (this == unit) {
+						return 'selected';
+					}
+				}
+			}));
 
 			return this;
 		}
@@ -277,36 +299,50 @@ Patrick Weygand
 		}
 	});
 
-	var minerals = new Minerals([
-								{id: 'isogen'},
-								{id: 'mexallon'},
-								{id: 'nocxium'},
-								{id: 'pyerite'},
-								{id: 'tritanium'},
-								{id: 'megacyte'},
-								{id: 'morphite'},
-								{id: 'zydrine'}
-	]),
-	item = new Item(),
-	mineralIndex = new MineralIndex(),
-	iskUnit = new IskUnit(),
-	user = new UserProps(),
-	itemView = new ItemView({el: $("#itemInput"), model: item}),
-	mineralsView = new MineralsView({id: "mineralsInput", model: minerals, index: mineralIndex, userProps: user}),
-	userPropsView = new UserPropsView({id: "userPropsInput", model: user}),
-	iskUnitView = new IskUnitView({id: "unit", model: iskUnit}),
-	calcsView = new CalcsView({
-		minerals: minerals,
-		item: item,
-		index: mineralIndex,
-		user: user,
-		iskUnit: iskUnit
+	var EveTool = Backbone.Router.extend({
+		routes: {
+			'doIRefine': 'refine',
+			'*any': 'refine',
+			'': 'refine'
+		},
+		initialize: function (options) {
+			this.minerals = new Minerals([
+										{id: 'isogen'},
+										{id: 'mexallon'},
+										{id: 'nocxium'},
+										{id: 'pyerite'},
+										{id: 'tritanium'},
+										{id: 'megacyte'},
+										{id: 'morphite'},
+										{id: 'zydrine'}
+			]);
+			this.item = new Item();
+			this.mineralIndex = new MineralIndex();
+			this.iskUnit = new IskUnit();
+			this.user = new UserProps();
+			this.itemView = new ItemView({model: this.item});
+			this.mineralsView = new MineralsView({id: "mineralsInput", model: this.minerals, index: this.mineralIndex, userProps: this.user});
+			this.userPropsView = new UserPropsView({id: "userPropsInput", model: this.user});
+			this.iskUnitView = new IskUnitView({id: "unit", model: this.iskUnit});
+			this.calcsView = new CalcsView({
+				minerals: this.minerals,
+				item: this.item,
+				index: this.mineralIndex,
+				user: this.user,
+				iskUnit: this.iskUnit
+			});
+		},
+		refine: function (options) {
+			$('#main').empty()
+			.append(this.userPropsView.render().el)
+			.append(this.itemView.render().el)
+			.append(this.mineralsView.render().el)
+			.append(this.calcsView.render().el)
+			.append(this.iskUnitView.render().el);
+		}
 	});
-	$('#itemInput').parent()
-	.prepend(userPropsView.render().el)
-	.append(mineralsView.render().el)
-	.append(calcsView.render().el)
-	.append(iskUnitView.render().el);
+	window.app = new EveTool();
+	Backbone.history.start({pushState: true});
 })();
 
 
