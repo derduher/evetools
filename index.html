@@ -28,7 +28,7 @@
   <footer>
 
   </footer>
-  <script type="text/template" id="IskUnitView">{{#names}}<option value="{{.}}"{{ selected}}>{{label}}</option>{{/names}}</script>
+  <script type="text/template" id="IskUnitView">{{#units}}<option value="{{.}}"{{ selected}}>{{label}}</option>{{/units}}</script>
   <script type="text/template" id="MineralView"><input type="number" name="{{id}}" id="{{id}}" min="0" value="{{val}}" required class="mineral"/><label class="mineral" for="{{id}}">{{label}}</label></script>
   <script type="text/template" id="EntryFormView"><li><label for="{{id}}">{{label}}</label><input type="number" name="{{id}}" id="{{id}}" min="0" value="{{val}}" required class="{{classname}}"/></li></script>
   <script type="text/template" id="ItemView"><li><label for="{{id}}">{{label}}</label><input type="number" name="{{id}}" id="{{id}}" min="0" value="{{val}}" required class="item"/><span class="unit">{{unit}}</span></li></script>

@@ -88,6 +88,17 @@ Patrick Weygand
 		}
 	});
 
+	var BasicView = Backbone.View.extend({
+		update: function (e){
+			var blah = {};
+			blah[e.target.id] = e.target.value;
+			this.model.set(blah);
+		},
+		initialize: function (attributes) {
+			_.bindAll(this, 'render');
+			this.renderTmpl = Mustache.compile($(this.tmpl).text());
+		}
+	});
 	var CalcsView = Backbone.View.extend({
 		tagName: 'p',
 		id: 'finalTotals',
@@ -140,19 +151,10 @@ Patrick Weygand
 		}
 	});
 
-	var EntryFormView = Backbone.View.extend({
+	var EntryFormView = BasicView.extend({
 		tagName: 'ul',
 		className: 'entryForm',
-		update: function (e){
-			var blah = {};
-			blah[e.target.id] = e.target.value;
-			this.model.set(blah);
-		},
-		tmpl: '#EntryFormView',
-		initialize: function (attributes) {
-			_.bindAll(this, 'render');
-			this.renderTmpl = Mustache.compile($(this.tmpl).text());
-		}
+		tmpl: '#EntryFormView'
 	});
 
 	var MineralCalculation = Backbone.View.extend({
@@ -236,20 +238,11 @@ Patrick Weygand
 			return this;
 		}
 	});
-	var IskUnitView = Backbone.View.extend({
+	var IskUnitView = BasicView.extend({
 		tagName: 'select',
 		id: 'unit',
 		events: {
 			'change': 'update'
-		},
-		update: function (e){
-			var blah = {};
-			blah[e.target.id] = e.target.value;
-			this.model.set(blah);
-		},
-		initialize: function () {
-			_.bindAll(this, 'render');
-			this.renderTmpl = Mustache.compile($(this.tmpl).text());
 		},
 		tmpl: '#IskUnitView',
 		render: function () {
@@ -257,7 +250,7 @@ Patrick Weygand
 			var unit = this.model.get('unit');
 
 			this.$el.append(this.renderTmpl({
-				names: [0,3,6,9,12],
+				units: [0,3,6,9,12],
 				label: this.model.getLabel,
 				selected: function () {
 					if (this == unit) {
@@ -269,28 +262,19 @@ Patrick Weygand
 			return this;
 		}
 	});
-	var UserPropsView = Backbone.View.extend({
+	var UserPropsView = BasicView.extend({
 		tagName: 'ul',
 		events: {
 			'change input': 'update'
 		},
 		tmpl: '#UserPropsView',
-		update: function (e){
-			var blah = {};
-			blah[e.target.id] = e.target.value;
-			this.model.set(blah);
-		},
-		initialize: function () {
-			_.bindAll(this, 'render');
-			this.tmpl = Mustache.compile($(this.tmpl).text());
-		},
 		render: function (){
 			this.$el.empty();
-			this.$el.html(this.tmpl({
+			this.$el.html(this.renderTmpl({
 				id: 'brokersFee',
 				val: this.model.get('brokersFee'),
 				label: 'Brokers Fee'
-			}) + this.tmpl({
+			}) + this.renderTmpl({
 				id: 'salesTax',
 				val: this.model.get('salesTax'),
 				label: 'sales tax'
