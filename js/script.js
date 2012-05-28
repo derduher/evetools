@@ -100,7 +100,7 @@ Patrick Weygand
 		}
 	});
 	var CalcsView = Backbone.View.extend({
-		tagName: 'p',
+		tagName: 'div',
 		id: 'finalTotals',
 		className: 'entryForm',
 		tmpl: '#CalcsView',
@@ -160,14 +160,29 @@ Patrick Weygand
 	var MineralCalculation = Backbone.View.extend({
 		tagName: 'span',
 		className: 'mineralCalculation',
+		events: {
+			mouseenter: 'showtip',
+			mouseleave: 'killtip'
+		},
+		showtip: function (e) {
+			this.tippy.css('display','inline-block');
+			that = this;
+			this.tippy.css('right','-' + that.tippy.innerWidth() + 'px');
+			//setTimeout(function(){console.log(that.tippy.outerWidth());that.tippy.css('right','-' + that.tippy.outerWidth() + 'px');}, 30);
+		},
+		killtip: function (e) {
+			this.tippy.hide();
+		},
 		initialize: function (attributes) {
 			_.bindAll(this, 'render');
 			this.renderTmpl = Mustache.compile($(this.tmpl).text());
+			this.renderTip = Mustache.compile($(this.tipTmpl).text());
 			this.model.on('change', this.render);
 			this.options.userProps.on('change', this.render);
 			this.options.index.on('change:' + this.model.id, this.render);
 		},
 		tmpl: '#MineralCalculation',
+		tipTmpl: '#MineralCalculationTip',
 		render: function () {
 			var indexPrice = this.options.index.get(this.model.id),
 			brokersFee = this.options.userProps.get('brokersFee'),
@@ -175,11 +190,15 @@ Patrick Weygand
 			calculated = this.model.calculate(indexPrice, brokersFee, tax);
 
 			this.$el.html(this.renderTmpl({
-				indexPrice: accounting.formatNumber(indexPrice, 2),
-				brokersFee: accounting.formatNumber(calculated.brokersFee, 2),
-				tax: accounting.formatNumber(calculated.tax, 2),
 				calculated: accounting.formatNumber(calculated.total, 2)
 			}));
+			this.tippy = $(this.renderTip({
+				subTotal: accounting.formatNumber(calculated.subTotal,2),
+				tax: accounting.formatNumber(calculated.tax,2),
+				brokersFee: accounting.formatNumber(calculated.brokersFee,2)
+			}));
+			this.tippy.hide();
+			this.$el.append(this.tippy);
 			return this;
 		}
 	});
@@ -318,10 +337,10 @@ Patrick Weygand
 		},
 		refine: function (options) {
 			$('#main').empty()
+			.append(this.calcsView.render().el)
 			.append(this.userPropsView.render().el)
 			.append(this.itemView.render().el)
 			.append(this.mineralsView.render().el)
-			.append(this.calcsView.render().el)
 			.append(this.iskUnitView.render().el);
 		}
 	});

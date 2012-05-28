@@ -32,9 +32,10 @@
   <script type="text/template" id="MineralView"><input type="number" name="{{id}}" id="{{id}}" min="0" value="{{val}}" required class="mineral"/><label class="mineral" for="{{id}}">{{label}}</label></script>
   <script type="text/template" id="EntryFormView"><li><label for="{{id}}">{{label}}</label><input type="number" name="{{id}}" id="{{id}}" min="0" value="{{val}}" required class="{{classname}}"/></li></script>
   <script type="text/template" id="ItemView"><li><label for="{{id}}">{{label}}</label><input type="number" name="{{id}}" id="{{id}}" min="0" value="{{val}}" required class="item"/><span class="unit">{{unit}}</span></li></script>
-  <script type="text/template" id="MineralCalculation">* <span class="calculationCol indexCol">{{indexPrice}}</span>-<span class="calculationCol taxCol">{{brokersFee}}</span>-<span class="calculationCol taxCol">{{tax}}</span> = <span class="calculationCol totalCol">{{calculated}}</span></script>
+  <script type="text/template" id="MineralCalculation"><span class="calculationCol totalCol">{{calculated}}</span></script>
+  <script type="text/template" id="MineralCalculationTip"><div class="tip"><div class="subtotal"><label>Sub-Total:</label>{{subTotal}}</div><div class="tax"><label>tax:</label>- {{tax}}</div><div class="brokersFee"><label>Brokers Fee:</label>- {{brokersFee}}</div></div></script>
   <script type="text/template" id="UserPropsView"><li><label for="{{id}}">{{label}}</label><input type="number" name="{{id}}" id="{{id}}" min="0" step="0.0001" value="{{val}}" required/></li></script>
-  <script type="text/template" id="CalcsView"><span id="marketTotal">marketval: {{marketVal}} {{unit}} ISK</span>, <span id="rawTotal">rawVal: {{rawVal}} {{unit}} ISK</span></script>
+  <script type="text/template" id="CalcsView"><div id="marketTotal"><label>Unprocessed</label><div class="total">{{marketVal}} {{unit}} ISK</div></div><div id="rawTotal"><label>reprocessed</label><div class="total">{{rawVal}} {{unit}} ISK</div></div></script>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>

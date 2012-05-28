@@ -88,6 +88,10 @@ label.mineral {
 input[type="number"] {
 	width: 6em;
 	text-align: right;
+	border: none;
+	background-color: hsl(195, 53%, 96%);
+	border-bottom-style: solid;
+	border-color: hsl(191, 52%, 92%);
 }
 input[type="number"] + .mineralCalculation {
 	margin-left: 1em;
@@ -108,9 +112,47 @@ input[type="number"] + .mineralCalculation {
 }
 .higherVal {
 	background-color: #FFFFE0;
+	outline-color: lightblue;
+	outline-offset: 0px;
+	outline-width: 0px;
+	outline-style: solid;
+	box-shadow: 1px 0 6px 1px lightblue;
+	font-size: 40pt;
 }
 
+#finalTotals {
+	font-size: 30pt;
+	margin: 0 auto;
+	width: 100%;
+	text-align: center;
+}
+#finalTotals .total {
+	color: lightgray;
+}
+#marketTotal, #rawTotal {
+	padding: 36pt;
+}
+#marketTotal {
+	display: inline-block;
+}
+#rawTotal {
+	display: inline-block;
+}
+#mineralsInput li .mineralCalculation {
+	position: relative;
+}
+.tip {
+	background: yellow;
+	display: inline-block;
+	position: absolute;
+	top: 2px;
+	text-align: right;
+}
 
+.tip label {
+	text-align: left;
+	display: inline;
+}
 
 
 
