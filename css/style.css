@@ -166,14 +166,14 @@ input[type="number"] + .mineralCalculation {
   
 
 }
-@media all (orientation: landscape) {
+@media all and (orientation: landscape) {
 	body {
-		background: rgba(127,255,127, .09);
+		background: rgba(127,255,127, .1);
 	}
 }
-@media all (orientation: portrait) {
+@media all and (orientation: portrait) {
 	body {
-		background: rgba(127,127,255, .09);
+		background: rgba(127,127,255, .1);
 	}
 }
 @media all and (max-width: 720px) {
