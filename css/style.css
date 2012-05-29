@@ -195,13 +195,16 @@ input[type="number"] + .mineralCalculation {
 		font-size: 1.5em;
 	}
 	#finalTotals {
-		font-size: 1.9em;
+		font-size: 1.6em;
 	}
 	ul label {
-		width: 3.9em;
+		width: auto;
 	}
 	.tip {
 		display: none !important;
+	}
+	.totalCol {
+		display: none;
 	}
 }
 
