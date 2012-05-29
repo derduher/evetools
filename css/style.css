@@ -102,7 +102,7 @@ input[type="number"] + .mineralCalculation {
 	margin-right: 1em;
 }
 .totalCol {
-	width: 6em;
+	width: auto;
 }
 .taxCol {
 	width: 4.5em;
@@ -166,22 +166,37 @@ input[type="number"] + .mineralCalculation {
 	body {
 		background: rgba(127,255,127, .15);
 	}
+	.tip {
+		display: none !important;
+	}
 	#unit,
 	#itemInput,
 	#userPropsInput,
 	#mineralsInput {
 		font-size: 2em;
 	}
+	#finalTotals {
+		font-size: 2.15em;
+	}
 }
 @media all and (max-width: 720px) and (orientation: portrait) {
 	body {
 		background: rgba(127,127,255, .15);
+	}
+	#unit,
+	#itemInput,
+	#userPropsInput,
+	#mineralsInput {
+		font-size: 2.3em;
 	}
 	#finalTotals {
 		font-size: 2.15em;
 	}
 	ul label {
 		width: 4em;
+	}
+	.tip {
+		display: none !important;
 	}
 }
 
