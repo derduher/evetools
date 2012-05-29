@@ -162,12 +162,14 @@ input[type="number"] + .mineralCalculation {
   
 
 }
+@media all and (max-width: 320px), all and (max-width: 720px) {
+	.tip {
+		display: none !important;
+	}
+}
 @media all and (max-width: 720px) and (orientation: landscape) {
 	body {
 		background: rgba(127,255,127, .15);
-	}
-	.tip {
-		display: none !important;
 	}
 	#unit,
 	#itemInput,
@@ -179,9 +181,17 @@ input[type="number"] + .mineralCalculation {
 		font-size: 2.05em;
 	}
 }
-@media all and (max-width: 400px) and (orientation: portrait) {
+@media all and (max-width: 320px), all and (max-width: 720px) and (orientation: portrait) {
 	body {
 		background: rgba(255,127,127, .15);
+	}
+	.totalCol {
+		display: none;
+	}
+}
+@media all and (max-width: 600px) and (orientation: portrait) {
+	body {
+		background: rgba(255,127,255, .15);
 	}
 }
 @media all and (max-width: 720px) and (orientation: portrait) {
@@ -205,12 +215,6 @@ input[type="number"] + .mineralCalculation {
 	margin: 0;}
 	#userPropsInput {
 		float: none;
-	}
-	.tip {
-		display: none !important;
-	}
-	.totalCol {
-		display: none;
 	}
 }
 
