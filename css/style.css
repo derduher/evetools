@@ -162,6 +162,16 @@ input[type="number"] + .mineralCalculation {
   
 
 }
+@media all and (max-width: 800px) and (orientation: landscape) {
+	body {
+	background: black;
+	}
+}
+@media all and (max-width: 800px) and (orientation: portrait) {
+	body {
+	background: blue;
+	}
+}
 
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
 .ir br { display: none; }
