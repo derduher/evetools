@@ -191,7 +191,7 @@ input[type="number"] + .mineralCalculation {
 	}
 	#finalTotals {
 		font-size: 1em;
-		margin: .5em;
+		padding: .5em;
 	}
 	ul label {
 		width: auto;
