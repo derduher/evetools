@@ -187,15 +187,10 @@ input[type="number"] + .mineralCalculation {
 @media all and (max-width: 720px) and (orientation: portrait) {
 	body {
 		background: rgba(127,127,255, .15);
-	}
-	#unit,
-	#itemInput,
-	#userPropsInput,
-	#mineralsInput {
 		font-size: 1.5em;
 	}
 	#finalTotals {
-		font-size: 1.6em;
+		margin: .5em;
 	}
 	ul label {
 		width: auto;
