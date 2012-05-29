@@ -70,6 +70,10 @@ td { vertical-align: top; }
 #userPropsInput {
 	float: right;
 }
+
+#userPropsInput input[type="number"] {
+	width: 4em;
+}
 #itemInput li, #mineralsInput li, #userPropsInput li{
 	margin: 5px 0;
 }
@@ -173,10 +177,13 @@ input[type="number"] + .mineralCalculation {
 	ul, ol {
 	padding: 0;
 	margin: 0;}
+	#userPropsInput {
+		float: none;
+	}
 }
 @media all and (max-width: 720px) and (orientation: landscape) {
 	body {
-		background: rgba(127,255,127, .15);
+		background: rgba(127,255,127, .10);
 	}
 	#unit,
 	#itemInput,
@@ -190,7 +197,7 @@ input[type="number"] + .mineralCalculation {
 }
 @media all and (max-width: 320px), all and (max-width: 720px) and (orientation: portrait) {
 	body {
-		background: rgba(255,127,127, .15);
+		background: rgba(255,127,127, .10);
 	}
 	.totalCol {
 		display: none;
@@ -198,12 +205,12 @@ input[type="number"] + .mineralCalculation {
 }
 @media all and (max-width: 600px) and (orientation: portrait) {
 	body {
-		background: rgba(255,127,255, .15);
+		background: rgba(255,127,255, .10);
 	}
 }
 @media all and (max-width: 720px) and (orientation: portrait) {
 	body {
-		background: rgba(127,127,255, .15);
+		background: rgba(127,127,255, .10);
 		font-size: 1.5em;
 	}
 	#finalTotals {
@@ -213,9 +220,6 @@ input[type="number"] + .mineralCalculation {
 	.higherVal {
 		font-size: 5em;
 		padding: 3em;
-	}
-	#userPropsInput {
-		float: none;
 	}
 }
 @media all and (max-width: 320px) and (orientation: portrait) {
