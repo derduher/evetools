@@ -74,7 +74,7 @@ td { vertical-align: top; }
 	margin: 5px 0;
 }
 ul label {
-	width: 9em;
+	width: 6em;
 	text-align: right;
 	display: inline-block;
 	margin: 0 1em;
@@ -117,11 +117,11 @@ input[type="number"] + .mineralCalculation {
 	outline-width: 0px;
 	outline-style: solid;
 	box-shadow: 1px 0 6px 1px lightblue;
-	font-size: 40pt;
+	font-size: 1.33em;
 }
 
 #finalTotals {
-	font-size: 30pt;
+	font-size: 2.25em;
 	margin: 0 auto;
 	width: 100%;
 	text-align: center;
@@ -130,7 +130,7 @@ input[type="number"] + .mineralCalculation {
 	color: lightgray;
 }
 #marketTotal, #rawTotal {
-	padding: 36pt;
+	padding: 1em;
 }
 #marketTotal {
 	display: inline-block;
@@ -162,14 +162,26 @@ input[type="number"] + .mineralCalculation {
   
 
 }
-@media all and (max-width: 800px) and (orientation: landscape) {
+@media all and (max-width: 720px) and (orientation: landscape) {
 	body {
-	background: black;
+		background: rgba(127,255,127, .15);
+	}
+	#unit,
+	#itemInput,
+	#userPropsInput,
+	#mineralsInput {
+		font-size: 2em;
 	}
 }
-@media all and (max-width: 800px) and (orientation: portrait) {
+@media all and (max-width: 720px) and (orientation: portrait) {
 	body {
-	background: blue;
+		background: rgba(127,127,255, .15);
+	}
+	#finalTotals {
+		font-size: 2.15em;
+	}
+	ul label {
+		width: 4em;
 	}
 }
 
