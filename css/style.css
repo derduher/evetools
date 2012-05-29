@@ -200,6 +200,12 @@ input[type="number"] + .mineralCalculation {
 	ul label {
 		width: auto;
 	}
+	ul, ol {
+	padding: 0;
+	margin: 0;}
+	#userPropsInput {
+		float: none;
+	}
 	.tip {
 		display: none !important;
 	}
