@@ -220,14 +220,18 @@ input[type="number"] + .mineralCalculation {
 		display: none;
 	}
 }
-@media all and (max-width: 320px) and (orientation: portrait) {
+@media all and (max-width: 320px) {
 	#finalTotals {
-		font-size: .25em;
+		font-size: .3em;
 		padding: .3em;
 	}
 	.higherVal {
-		font-size: 4em;
 		padding: 2em;
+	}
+}
+@media all and (max-width: 320px) and (orientation: portrait) {
+	.higherVal {
+		font-size: 4.5em;
 	}
 }
 @media all and (max-width: 320px) and (orientation: landscape) {
@@ -237,8 +241,8 @@ input[type="number"] + .mineralCalculation {
 	#mineralsInput {
 		font-size: 1.5em;
 	}
-	#finalTotals {
-		font-size: 1.55em;
+	.higherVal {
+		font-size: 4em;
 	}
 }
 
