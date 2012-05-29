@@ -162,10 +162,17 @@ input[type="number"] + .mineralCalculation {
   
 
 }
-@media all and (max-width: 320px), all and (max-width: 720px) {
+@media all and (max-width: 720px) {
 	.tip {
 		display: none !important;
 	}
+	ul label {
+		width: auto;
+		margin: 0 1em 0 0;
+	}
+	ul, ol {
+	padding: 0;
+	margin: 0;}
 }
 @media all and (max-width: 720px) and (orientation: landscape) {
 	body {
@@ -207,15 +214,21 @@ input[type="number"] + .mineralCalculation {
 		font-size: 5em;
 		padding: 3em;
 	}
-	ul label {
-		width: auto;
-	}
-	ul, ol {
-	padding: 0;
-	margin: 0;}
 	#userPropsInput {
 		float: none;
 	}
+}
+@media all and (max-width: 320px) and (orientation: portrait) {
+	#finalTotals {
+		font-size: .25em;
+		padding: .3em;
+	}
+	.higherVal {
+		font-size: 4em;
+		padding: 2em;
+	}
+}
+@media all and (max-width: 320px) and (orientation: landscape) {
 }
 
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
