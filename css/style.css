@@ -231,6 +231,15 @@ input[type="number"] + .mineralCalculation {
 	}
 }
 @media all and (max-width: 320px) and (orientation: landscape) {
+	#unit,
+	#itemInput,
+	#userPropsInput,
+	#mineralsInput {
+		font-size: 1.5em;
+	}
+	#finalTotals {
+		font-size: 1.55em;
+	}
 }
 
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
