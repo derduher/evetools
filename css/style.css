@@ -173,10 +173,10 @@ input[type="number"] + .mineralCalculation {
 	#itemInput,
 	#userPropsInput,
 	#mineralsInput {
-		font-size: 2em;
+		font-size: 1.9em;
 	}
 	#finalTotals {
-		font-size: 2.15em;
+		font-size: 2.05em;
 	}
 }
 @media all and (max-width: 370px) and (orientation: portrait) {
@@ -192,13 +192,13 @@ input[type="number"] + .mineralCalculation {
 	#itemInput,
 	#userPropsInput,
 	#mineralsInput {
-		font-size: 2.3em;
+		font-size: 2.2em;
 	}
 	#finalTotals {
-		font-size: 2.15em;
+		font-size: 2.05em;
 	}
 	ul label {
-		width: 4em;
+		width: 3.9em;
 	}
 	.tip {
 		display: none !important;
