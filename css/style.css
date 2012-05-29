@@ -190,8 +190,12 @@ input[type="number"] + .mineralCalculation {
 		font-size: 1.5em;
 	}
 	#finalTotals {
-		font-size: .8em;
-		padding: .4em;
+		font-size: .3em;
+		padding: .3em;
+	}
+	.higherVal {
+		font-size: 3em;
+		padding: 3em;
 	}
 	ul label {
 		width: auto;
